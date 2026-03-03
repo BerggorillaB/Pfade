@@ -1,0 +1,17 @@
+name: Deploy Cloudflare Worker (Basic Auth)
+
+on:
+  push:
+    branches: [ main ]          # oder dein Branch, der GitHub Pages publiziert
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Publish Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          command: publish auth-basic.js --name protected-site
