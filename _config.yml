@@ -1,8 +1,0 @@
-plugins:
-  - jekyll-auth
-
-auth:
-  username: Gorilla
-  password: Karl-Simrock1840+
-  protected_paths:
-    - "/"
