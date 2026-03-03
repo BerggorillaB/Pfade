@@ -14,4 +14,4 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          command: publish auth-basic.js --name protected-site
+          command: publish worker.js --name protected-site
