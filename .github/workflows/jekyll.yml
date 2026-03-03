@@ -1,1 +1,40 @@
+name: Build & Deploy Jekyll site
 
+on:
+  push:
+    branches: [ main ]          # oder dein Standard‑Branch
+  workflow_dispatch:           # manueller Trigger möglich
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout des Repos
+      - uses: actions/checkout@v3
+
+      # 2️⃣ Ruby‑Umgebung einrichten (Jekyll benötigt Ruby ≥ 2.7)
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'          # aktuelle stabile Version
+          bundler-cache: true          # Cache für gem‑Installation
+
+      # 3️⃣ Abhängigkeiten installieren (Gemfile)
+      - name: Install gems
+        run: bundle install --jobs 4 --retry 3
+
+      # 4️⃣ Build‑Schritt – hier kommen die Secrets rein
+      - name: Build site
+        env:
+          AUTH_USER: ${{ secrets.AUTH_USER }}
+          AUTH_PASS: ${{ secrets.AUTH_PASS }}
+        run: bundle exec jekyll build
+
+      # 5️⃣ Deploy nach GitHub Pages (gh‑pages‑branch)
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          # optional: force orphan branch, keep history etc.
